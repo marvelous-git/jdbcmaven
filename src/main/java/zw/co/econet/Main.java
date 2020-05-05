@@ -1,9 +1,6 @@
 package zw.co.econet;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Main {
 
@@ -15,6 +12,7 @@ public class Main {
     public static void main(String[] args) {
         Connection conn = null;
         Statement st = null;
+        PreparedStatement ps = null;
 
 
        try {
@@ -24,15 +22,23 @@ public class Main {
            //open connection
            conn = DriverManager.getConnection(URL,USERNAME,PASSWORD);
 
+
            //create Statement
            st = conn.createStatement();
+           ps = conn.prepareStatement("INSERT INTO `studentdb`.`student` (`id`, `name`, `tech`) VALUES (?, ?, ?)");
+           ps.setInt(1, 5);
+           ps.setString(2, "Senzeni");
+           ps.setString(3, "Mashamba");
+           ps.execute();
 
            //execute statement
            ResultSet rs = st.executeQuery("SELECT * FROM studentdb.student");
 
            //extract data fro the result set
-           while (rs.next()){
-               System.out.println(rs.getInt("id") + " ," + rs.getString("name") + " ," + rs.getString("tech"));
+           if (rs != null) {
+               while (rs.next()) {
+                   System.out.println(rs.getInt("id") + " ," + rs.getString("name") + " ," + rs.getString("tech"));
+               }
            }
            rs.close();
            st.close();
